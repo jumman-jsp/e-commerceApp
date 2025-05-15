@@ -1,0 +1,132 @@
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_application_1/presentation/App_colours.dart';
+import 'package:flutter_application_1/presentation/assets_part.dart';
+
+class HomeSlider extends StatefulWidget {
+  const HomeSlider({super.key});
+
+  @override
+  State<HomeSlider> createState() => _HomeSliderState();
+}
+
+class _HomeSliderState extends State<HomeSlider> {
+  final List<String> sliderList = [
+    AssetsPart.product_1,
+    AssetsPart.product_1,
+    AssetsPart.product_1,
+    AssetsPart.product_1,
+    AssetsPart.product_1,
+  ];
+
+  final ValueNotifier<int> _selectedPageIndex = ValueNotifier<int>(0);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        buildCarouselSlider(),
+        const SizedBox(height: 16),
+        buildDotIndicator(), // Add dot indicator here
+      ],
+    );
+  }
+
+  Widget buildCarouselSlider() {
+    return CarouselSlider(
+      items: sliderList.map((imagePath) {
+        return Builder(
+          builder: (context) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
+                color: AppColors.primarycolor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Image.asset('Assets/images/Group 1056.png'),
+                  ),
+                  Expanded(flex: 3, child: buildProductDescription()),
+                ],
+              ),
+            );
+          },
+        );
+      }).toList(),
+      options: CarouselOptions(
+        height: 180,
+        viewportFraction: 1.0,
+        onPageChanged: (index, reason) {
+          _selectedPageIndex.value = index;
+        },
+      ),
+    );
+  }
+
+  Widget buildProductDescription() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const Text(
+            'Happy New Year, Special Deal 30% Off',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: 100,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primarycolor,
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+              ),
+              onPressed: () {},
+              child: const Text(
+                "Buy Now",
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ✅ Correct placement of dot indicator inside the state class
+  Widget buildDotIndicator() {
+    return ValueListenableBuilder<int>(
+      valueListenable: _selectedPageIndex,
+      builder: (context, currentIndex, _) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(sliderList.length, (index) {
+            bool isSelected = index == currentIndex;
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: isSelected ? 12 : 8,
+              height: isSelected ? 12 : 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? AppColors.primarycolor : Colors.grey,
+              ),
+            );
+          }),
+        );
+      },
+    );
+  }
+}
