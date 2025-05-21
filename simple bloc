@@ -1,0 +1,68 @@
+//simple bloc
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+void main (){
+
+  runApp(MyApp(),);
+}
+
+
+ class counterlogic extends Cubit<int>{
+  counterlogic():super(0);
+
+
+  increment()=>emit(state+1);
+  decrement()=>emit(state-1);
+
+ }
+
+
+
+class MyApp  extends StatelessWidget{
+  const MyApp({super.key});
+
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider( 
+        providers: [
+          BlocProvider(create: (context)=> counterlogic(),)
+        ],
+        child: MaterialApp(
+        home: blocp(),
+    ),);
+  }
+
+}
+class blocp extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("count the number "),
+        centerTitle: true,
+
+      ),
+      body:Center(
+        child: BlocBuilder <counterlogic,int>(builder: (context, count){
+          return Text("count:$count", style: TextStyle( fontSize: 40));
+        })
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [ FloatingActionButton(onPressed:()=>context.read<counterlogic>().increment(), child: Icon(Icons.add),),
+          FloatingActionButton(onPressed:()=>context.read<counterlogic>().decrement(), child: Icon(Icons.remove),),
+        ],
+      ),
+
+
+
+    );
+  }
+
+}
